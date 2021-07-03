@@ -3,17 +3,26 @@
 # Declare characters used by this game. The color argument colorizes the
 # name of the character.
 
-define vr = Character("VR-Senpai", color="#62B92B")
-define cat = Character("the cat", color="#000000")
-define player = Character("you")
-define anc = Character("an announcement")
+define vr = Character("Blonde Woman", color="#62B92B")
+define cat = Character("Cat", color="#000000")
+define player = Character("You")
+define anc = Character("Announcement")
+define gui.choice_button_text_idle_color = '#000000'
+
+define lemmikkivaunu = False
+define sinkkuvaunu = False
+define talkedToVR = False
+define talkedToScotRail = False
+define talkedToCat = False
+define gaveCucumber = False
+define studentCardShown = False
 
 
 # The game starts here.
 
 label start:
 
-    #play music "audio/trainbgmusic.mp3"
+    play music "audio/basic_ambience.mp3"
 
     # Show a background. This uses a placeholder by default, but you can
     # add a file (named either "bg room.png" or "bg room.jpg") to the
@@ -26,8 +35,10 @@ label start:
     "Which carriage will you want to sit in?"
     menu:
         "the single’s carriage.":
+            $ sinkkuvaunu = True
             jump singleCar
         "the pet carriage":
+            $ lemmikkivaunu = True
             jump petCar
         "the economy class":
             jump economyCar
@@ -57,13 +68,14 @@ label petCar:
 
 label talkCat:
 
+    $ talkedToCat = True
     "You decide to have a conversation with the cat."
     cat "Meow."
     player "M-meow"
     cat "Meow?"
     player "Meow!"
     cat "Meow."
-    "You remember you have some leftover snacs from the Pride event in you bag."
+    "You remember you have some leftover snacks from the Pride event in you bag."
     
     "Offer a piece of your delicious Finnish home-grown cucumber to the cat?"
     menu:
@@ -85,7 +97,8 @@ label staringCat:
             jump arrivalAtStation
 
 label cucumberCat:
-
+    $ gaveCucumber = True
+    play sound "audio/cucumber.wav"
     cat "*Eats the cucumber and purrs loudly.*"
     "You pet the cat who seems to enjoy your company very much. The cat thinks you’re a purrfect friend"
     jump arrivalAtStation
@@ -94,6 +107,8 @@ label cucumberCat:
 label singleCar:
 
     #scene bg train
+    show vr happy at center with fade:
+        zoom 0.5
     "You see a dashing blonde Finnish woman. She looks friendly, but a bit shy."
     
     "Do you want to sit in front of her?"
@@ -106,6 +121,7 @@ label singleCar:
 label noVR:
     
     "You decide not to talk to the blonde woman."
+    hide vr with fade
     "In a few seats away, you notice a red-haired, joyful person glowing with untypical, even magical energy rarely. She smiles at you invitingly and moves her bagpipes offering you a seat next to her."
 
     "Do you want to sit next to her?"
@@ -124,42 +140,82 @@ label talkVR:
     # replace it by adding a file named "eileen happy.png" to the images
     # directory.
 
-    show vr happy
-
     # These display lines of dialogue.
+    $ talkedToVR = True
 
-    vr "Hello I am a train"
+    "You sit in front of her, exchanging an awkward smile. You notice she is still a bit out of breath."
+    "As you notice she is also wearing a bracelet given at the Pride event you just attended, you decide to strike a conversation, breaking the Finnish rules of not talking to strangers."
+    "She looks a bit surprised as you open your mouth, showing her your own bracelet as well."
+    
+    player "I see you went to Pride as well. Did you have fun?"
+    vr "Oh…  Yes, even though my friends couldn’t make it."
+    vr "I was supposed to come here with Onni B. but he forgot he had booked a holiday with his family at Koli this weekend"
 
-    vr "Do you want to travel with VR?"
+    "She notices there’s a student badge of the honoroble KRAO academy on your bag."
+    vr "Your badge... Are you a student?"
+    # show vr excited
+    player "Yes, I am."
+    vr "*smirk* Really? Can you prove it? Do you have a student card with you?"
+
+    "Show your student card to the woman?"
 
     menu:
         "Yes":
+            $ studentCardShown = True
             jump vr_yes
         "No":
             jump vr_no
 
 label vr_yes:
-    vr "Good choice"
-    jump vr_end
+    player "Here it is."
+    "The woman inspects your student card."
+    # show vr with hearts in eyes
+    vr "You look cute in the picture."
+    vr "Allow me to introduce myself as well. My name is Valpuri Rautatie."
+    "You have solved the mystery of the woman’s name."
+    hide vr
+    jump arrivalAtStation
 
 label vr_no:
-    vr "Bad choice"
+    vr "I actually lost mine at Pride…. Sorry about that."
+    "She looks disappointed."
+    vr "Oh well. I won’t tell you my name then."
     hide vr
-    jump vr_end
-
-label vr_end:
-    vr "uwu owo"
-
-    # This ends the game.
-    return
+    jump arrivalAtStation
 
 label talkSR:
 
     "jtn"
 
 label arrivalAtStation:
-
+    play music "audio/station_ambience.wav"
     anc "Seuraavaksi Kouvola. Nästä Kouvola. The next stop, Kouvola. Taajamajuna Joensuuhun lähtee raiteelta kuusi… kuusi… kuusi"
     "You have arrived at your destination. You step out of the train into the station."
-    return
 
+    if sinkkuvaunu:
+        if talkedToVR:
+            if studentCardShown:
+                # GOOD VR ENDING
+                show vr happy at center with fade:
+                    zoom 0.5
+                vr "Do you want to grab a cup of coffee?"
+                "You went to get a cup of coffee with Valpuri"
+                hide vr
+            else:
+                # BAD VR ENDING
+                show vr happy at center with fade:
+                    zoom 0.5
+                player "Do you want to grab a cup of coffee?"
+                vr "Sorry, maybe not. I still do not know if you are really a student."
+                hide vr with fade
+                "The woman walked away from you."
+        elif talkedToScotRail:
+            "..."
+            # SOMETHING HAPPENS IN HERE
+    elif lemmikkivaunu and talkedToCat:
+        if gaveCucumber:
+            "The cat you met at the carriage joins you and you walk together to the bus stop."
+        else:
+            "The cat you met at the carriag walks into their limousine and puts on their top hat and looks at you with a smug face."
+with fade
+"The end."

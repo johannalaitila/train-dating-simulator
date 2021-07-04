@@ -3,7 +3,7 @@
 # GUI and game properties
 define gui.choice_button_text_idle_color = '#000000'
 define config.name = "Train Dating Simulator"
-define gui.about = _("Pride Game Jam 2021 project by Johanna Laitila, Kaisa Rautiainen & Lukki Virtanen.\nPhoto credit: https://fi.wikipedia.org/wiki/Kouvolan_rautatieasema#/media/Tiedosto:Kouvolan_matkakeskus.JPG")
+define gui.about = _("Pride Game Jam 2021 project by Johanna Laitila, Kaisa Rautiainen & Lukki Virtanen.\nPhoto credit: {a=https://fi.wikipedia.org/wiki/Kouvolan_rautatieasema#/media/Tiedosto:Kouvolan_matkakeskus.JPG}Otto Karikoski{/a}.\nSounds by {a=https://freesound.org/people/alexkandrell/sounds/277755/}alexkandrell{/a}, {a=https://freesound.org/people/SubUnit_FieldRec/sounds/155042/}SubUnit_FieldRec{/a}, {a=https://freesound.org/people/Thomas_Marcum/sounds/447943/}Thomas_Marcum{/a} and {a=https://freesound.org/people/InspectorJ/sounds/332015/}InspectorJ{/a}.")
 define gui.text_color = '#000000'
 define gui.accent_color = '#000000' #Main menu title etc
 
@@ -12,6 +12,7 @@ define gui.accent_color = '#000000' #Main menu title etc
 
 define vr = Character("Blonde Woman", color="#62B92B")
 define vrFullName = Character("Valpuri Rautatie", color="#62B92B")
+define scotrail = Character("Tréana MacTravel", color="#62B92B")
 define cat = Character("Cat", color="#000000")
 define player = Character("You")
 define anc = Character("Announcement")
@@ -23,6 +24,7 @@ define talkedToScotRail = False
 define talkedToCat = False
 define gaveCucumber = False
 define studentCardShown = False
+define askedAboutScotland = False
 
 # The game starts here.
 
@@ -137,7 +139,9 @@ label singleCar:
 label noVR:
     
     "You decide not to talk to the blonde woman."
-    hide vr with fade
+    hide vr
+    show bg traininside2
+    show scot
     "In a few seats away, you notice a red-haired, joyful person glowing with untypical, even magical energy rarely. She smiles at you invitingly and moves her bagpipes offering you a seat next to her."
 
     "Do you want to sit next to her?"
@@ -145,6 +149,7 @@ label noVR:
         "yes":
             jump talkSR
         "no":
+            hide scot with fade
             "You decide not to talk to the red-haired woman either, preferring to take a seat in the corner of the carriage, spending the journey alone looking out of the window."
             "You forgot your headphones at the Pride event so you cannot even listen to the latest episode of your favourite True Crime podcast."
             jump arrivalAtStation
@@ -201,7 +206,33 @@ label vr_no:
 
 label talkSR:
 
-    "jtn"
+    "You sit next to the magical person."
+
+    scotrail "Hello. My name is Tréana MacTravel."
+    player "Hi Tréana. Nice to meet you."
+    "She seems very likeable and you want to continue talking to her. What do you want to ask her?"
+    menu:
+        "Do you like music?":
+            jump bagpipes
+        "Where are you from?":
+            jump scotland
+
+label bagpipes:
+    scotrail "Yes. Actually, I'm a musician."
+    player "Oh. What instrument do you play then?"
+    scotrail "The bagpipes."
+    "Tréana begins to play the bagpipes."
+    # play audio bagpipes
+    "You keep listening Tréana and her bagpipes for the rest of the journey."
+    jump arrivalAtStation
+label scotland:
+    $ askedAboutScotland = True
+    scotrail "Aberdeen, Scotland."
+    player "That's exciting. Have you ever seen the Loch Ness monster?"
+    scotrail "Hahaha... Loch Ness is near Inverness. I have been there but haven't seen the monster."
+    player "Hahaha."
+    "You have an interesting conversation with her for the rest of the journey."
+    jump arrivalAtStation
 
 label arrivalAtStation:
     play music "audio/station_ambience.wav"
@@ -211,24 +242,25 @@ label arrivalAtStation:
 
     if sinkkuvaunu:
         if talkedToVR:
+            show vr happy at center with fade:
+                    zoom 0.4
+                    yoffset -150
             if studentCardShown:
                 # GOOD VR ENDING
-                show vr happy at center with fade:
-                    zoom 0.5
                 vrFullName "Do you want to grab a cup of coffee?"
                 "You went to get a cup of coffee with Valpuri."
                 hide vr
             else:
                 # BAD VR ENDING
-                show vr happy at center with fade:
-                    zoom 0.5
                 player "Do you want to grab a cup of coffee?"
                 vr "Sorry, maybe not. I still do not know if you are really a student."
                 hide vr with fade
                 "The woman walked away from you."
-        elif talkedToScotRail:
-            "..."
-            # SOMETHING HAPPENS IN HERE
+        elif askedAboutScotland:
+            show scot with fade
+            scotrail "Hey, I'm a bit hungry. Would you like to come to my place for some deep-fried mars bars?"
+            player "I would love to."
+            "You went to her place, fell in love and now plan to move to Scotland to travel in the great ScotRail train and to see the Loch Ness monster."
     elif lemmikkivaunu and talkedToCat:
         show kissa at center with fade:
                     zoom 0.5

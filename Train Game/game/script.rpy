@@ -4,6 +4,7 @@
 # name of the character.
 
 define vr = Character("Blonde Woman", color="#62B92B")
+define vrFullName = Character("Valpuri Rautatie", color="#62B92B")
 define cat = Character("Cat", color="#000000")
 define player = Character("You")
 define anc = Character("Announcement")
@@ -17,19 +18,19 @@ define talkedToCat = False
 define gaveCucumber = False
 define studentCardShown = False
 
-
 # The game starts here.
 
 label start:
 
-    play music "audio/basic_ambience.mp3"
+    play music "audio/station_ambience.wav"
 
     # Show a background. This uses a placeholder by default, but you can
     # add a file (named either "bg room.png" or "bg room.jpg") to the
     # images directory to show it.
 
-    #scene bg railwaystation
+    scene bg helsinki
     "You are in Helsinki railway station. You have just attended Helsinki Pride and now are returning to your home in Kouvola."
+    scene bg traincarriage
     "You can choose whether you want to take a seat in the single’s carriage, the pet carriage or economy class carriage."
     
     "Which carriage will you want to sit in?"
@@ -45,16 +46,19 @@ label start:
     
 label economyCar:
 
-    #scene bg train
-    "You step into the economy class."
+    scene bg traininside
+    play music "audio/basic_ambience.mp3"
+    "You step into the train into the economy class."
     "There is no one in the carriage but an old man who is snoring very loudly. You have forgotten your headphones at the Pride event and have to suffer the snoring for hours as a punishment."
     jump arrivalAtStation
 
 label petCar:
 
-    #scene bg train
-    "You step into the pet carriage."
-    #show cat 
+    scene bg traininside
+    play music "audio/basic_ambience.mp3"
+    "You step into the train into the pet carriage."
+    show kissa at center with fade:
+                    zoom 0.5
     "You see an aristocratic looking cat sitting on their own seat."
 
     "Do you want to talk to it?"
@@ -63,6 +67,7 @@ label petCar:
             jump talkCat
         "no":
             "You couldn’t be bothered to talk to the cat."
+            hide kissa
             jump arrivalAtStation
 
 
@@ -94,6 +99,7 @@ label staringCat:
             jump cucumberCat
         "eat it yourself":
             cat "*Hisses at you*"
+            hide kissa
             jump arrivalAtStation
 
 label cucumberCat:
@@ -101,14 +107,18 @@ label cucumberCat:
     play sound "audio/cucumber.wav"
     cat "*Eats the cucumber and purrs loudly.*"
     "You pet the cat who seems to enjoy your company very much. The cat thinks you’re a purrfect friend"
+    hide kissa
     jump arrivalAtStation
 
 
 label singleCar:
 
-    #scene bg train
-    show vr happy at center with fade:
-        zoom 0.5
+    scene bg traininside
+    play music "audio/basic_ambience.mp3"
+    "You step into the train into the single's carriage."
+    show vr happy with fade:
+        xoffset 300
+        yoffset -20
     "You see a dashing blonde Finnish woman. She looks friendly, but a bit shy."
     
     "Do you want to sit in front of her?"
@@ -129,7 +139,7 @@ label noVR:
         "yes":
             jump talkSR
         "no":
-            "You take a seat in the corner of the carriage, spending the journey alone looking out of the window."
+            "You decide not to talk to the red-haired woman either, preferring to take a seat in the corner of the carriage, spending the journey alone looking out of the window."
             "You forgot your headphones at the Pride event so you cannot even listen to the latest episode of your favourite True Crime podcast."
             jump arrivalAtStation
 
@@ -171,7 +181,7 @@ label vr_yes:
     "The woman inspects your student card."
     # show vr with hearts in eyes
     vr "You look cute in the picture."
-    vr "Allow me to introduce myself as well. My name is Valpuri Rautatie."
+    vrFullName "Allow me to introduce myself as well. My name is Valpuri Rautatie."
     "You have solved the mystery of the woman’s name."
     hide vr
     jump arrivalAtStation
@@ -198,8 +208,8 @@ label arrivalAtStation:
                 # GOOD VR ENDING
                 show vr happy at center with fade:
                     zoom 0.5
-                vr "Do you want to grab a cup of coffee?"
-                "You went to get a cup of coffee with Valpuri"
+                vrFullName "Do you want to grab a cup of coffee?"
+                "You went to get a cup of coffee with Valpuri."
                 hide vr
             else:
                 # BAD VR ENDING
@@ -213,9 +223,13 @@ label arrivalAtStation:
             "..."
             # SOMETHING HAPPENS IN HERE
     elif lemmikkivaunu and talkedToCat:
+        show kissa at center with fade:
+                    zoom 0.5
         if gaveCucumber:
             "The cat you met at the carriage joins you and you walk together to the bus stop."
         else:
-            "The cat you met at the carriag walks into their limousine and puts on their top hat and looks at you with a smug face."
+            "The cat you met at the carriage walks into their limousine and puts on their top hat and looks at you with a smug face."
+hide kissa
+hide vr
 with fade
 "The end."

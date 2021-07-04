@@ -141,7 +141,9 @@ label noVR:
     "You decide not to talk to the blonde woman."
     hide vr
     show bg traininside2
-    show scot
+    show scot at center with fade:
+        zoom 0.9
+        yoffset 550
     "In a few seats away, you notice a red-haired, joyful person glowing with untypical, even magical energy rarely. She smiles at you invitingly and moves her bagpipes offering you a seat next to her."
 
     "Do you want to sit next to her?"
@@ -257,7 +259,9 @@ label arrivalAtStation:
                 hide vr with fade
                 "The woman walked away from you."
         elif askedAboutScotland:
-            show scot with fade
+            show scot at center with fade:
+                zoom 0.9
+                yoffset 550
             scotrail "Hey, I'm a bit hungry. Would you like to come to my place for some deep-fried mars bars?"
             player "I would love to."
             "You went to her place, fell in love and now plan to move to Scotland to travel in the great ScotRail train and to see the Loch Ness monster."

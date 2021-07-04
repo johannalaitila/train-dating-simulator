@@ -1,5 +1,12 @@
 # The script of the game goes in this file.
 
+# GUI and game properties
+define gui.choice_button_text_idle_color = '#000000'
+define config.name = "Train Dating Simulator"
+define gui.about = _("Pride Game Jam 2021 project by Johanna Laitila, Kaisa Rautiainen & Lukki Virtanen.\nPhoto credit: https://fi.wikipedia.org/wiki/Kouvolan_rautatieasema#/media/Tiedosto:Kouvolan_matkakeskus.JPG")
+define gui.text_color = '#000000'
+define gui.accent_color = '#000000' #Main menu title etc
+
 # Declare characters used by this game. The color argument colorizes the
 # name of the character.
 
@@ -8,7 +15,6 @@ define vrFullName = Character("Valpuri Rautatie", color="#62B92B")
 define cat = Character("Cat", color="#000000")
 define player = Character("You")
 define anc = Character("Announcement")
-define gui.choice_button_text_idle_color = '#000000'
 
 define lemmikkivaunu = False
 define sinkkuvaunu = False
@@ -199,6 +205,7 @@ label talkSR:
 
 label arrivalAtStation:
     play music "audio/station_ambience.wav"
+    scene bg kouvola
     anc "Seuraavaksi Kouvola. Nästä Kouvola. The next stop, Kouvola. Taajamajuna Joensuuhun lähtee raiteelta kuusi… kuusi… kuusi"
     "You have arrived at your destination. You step out of the train into the station."
 
@@ -229,7 +236,3 @@ label arrivalAtStation:
             "The cat you met at the carriage joins you and you walk together to the bus stop."
         else:
             "The cat you met at the carriage walks into their limousine and puts on their top hat and looks at you with a smug face."
-hide kissa
-hide vr
-with fade
-"The end."
